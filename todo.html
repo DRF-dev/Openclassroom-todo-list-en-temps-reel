@@ -1,0 +1,111 @@
+<html>
+
+    <head>
+        <meta charset="utf-8"/>
+        <title>Liste des tâches en temps réel</title>
+    </head>
+
+    <body>
+
+        <h1>Liste des tâches en temps réel</h1>
+
+        <ul id="todoListAffichage"></ul>
+
+        <form action="/" method="POST" id="todoListeFormulaire">
+            <label for="tache">Quelle nouvelle tâches ?</label>
+            <input type="text" name="tache" id="tache"/>
+            <button type="submit" id="envoiTache">Envoyer</button>
+        </form>
+        
+        <script src="http://code.jquery.com/jquery-1.12.2.min.js"></script>
+        <script src="/socket.io/socket.io.js"></script>
+        <script>
+            //Connexion à socket.io
+            const socket = io.connect('http://localhost:8080/');
+
+            //On affiche tout à la 1ère connexion
+            socket.on('envoiTache',
+                function(todoListe) {
+                    //todoListe.forEach(function(element) {
+                        for (let i = 0; i < todoListe.length; i++) {
+                            const a = document.createElement('li');
+                            a.id = i;
+                            a.innerHTML = '<span>✘ </span>' + todoListe[i];
+                            const listeAffichage = document.getElementsByTagName('ul')[0];
+
+                            listeAffichage.appendChild(a); 
+                        }
+                    //});
+
+                    //On applique un evenement qui supprime l'evenement lorque l'on clique sur la croix
+                    for (let i = 0; i < todoListe.length; i++) {
+                        const lignes = document.getElementsByTagName('li')[i];
+                        lignes.addEventListener('click', function(){
+                            socket.emit('suppression', lignes);
+                        });
+                    }
+
+                    //On met un curseur doigt
+                    for (let i = 0; i < todoListe.length; i++) {
+                        let lignes = document.getElementsByTagName('li')[i];
+                        lignes.style.cursor = 'pointer';
+                    }
+                }
+            );
+
+            //On envoi au serveur une todo a ajouter
+            const formulaire = document.getElementById('todoListeFormulaire');
+            formulaire.addEventListener('submit', function(e){
+                let valeur = document.getElementById('tache').value;
+                socket.emit('ajoutTache', valeur);
+                $('#tache').val('').focus();
+                e.preventDefault();
+            });
+
+            //On recoit une version du tableau mise à jour et on l'affiche
+            socket.on('tableauV2',
+                function(todoListe) {
+                    document.getElementsByTagName('ul')[0].innerHTML = '';
+                    
+                    /*todoListe.forEach(function(element) {
+                        const a = document.createElement('li');
+                        a.id = element;
+                        a.innerHTML = '<span>✘ </span>' + element;
+                        const listeAffichage = document.getElementsByTagName('ul')[0];
+
+                        listeAffichage.appendChild(a);
+                    });*/
+
+                    for (let i = 0; i < todoListe.length; i++) {
+                        const a = document.createElement('li');
+                        a.id = i;
+                        a.innerHTML = '<span>✘ </span>' + todoListe[i];
+                        const listeAffichage = document.getElementsByTagName('ul')[0];
+
+                        listeAffichage.appendChild(a); 
+                    }
+
+                    //On applique un evenement qui supprime l'evenement lorque l'on clique sur la croix
+                    for (let i = 0; i < todoListe.length; i++) {
+                        let lignes = document.getElementsByTagName('li')[i];
+                        lignes.addEventListener('click', function(){
+                            console.log(i);
+                            socket.emit('suppression', i);
+                        });
+                    }
+
+                    //On met un curseur doigt
+                    for (let i = 0; i < todoListe.length; i++) {
+                        let lignes = document.getElementsByTagName('li')[i];
+                        lignes.style.cursor = 'pointer';
+                    }
+                }
+            );
+
+
+
+        </script>
+
+    </body>
+
+</html>
