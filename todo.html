@@ -39,16 +39,10 @@
 
                     //On applique un evenement qui supprime l'evenement lorque l'on clique sur la croix
                     for (let i = 0; i < todoListe.length; i++) {
-                        const lignes = document.getElementsByTagName('li')[i];
-                        lignes.addEventListener('click', function(){
-                            socket.emit('suppression', lignes);
+                        let croix = document.getElementsByTagName('span')[i];
+                        croix.addEventListener('click', function(){
+                            socket.emit('suppression', i);
                         });
-                    }
-
-                    //On met un curseur doigt
-                    for (let i = 0; i < todoListe.length; i++) {
-                        let lignes = document.getElementsByTagName('li')[i];
-                        lignes.style.cursor = 'pointer';
                     }
                 }
             );
@@ -87,22 +81,23 @@
 
                     //On applique un evenement qui supprime l'evenement lorque l'on clique sur la croix
                     for (let i = 0; i < todoListe.length; i++) {
-                        let lignes = document.getElementsByTagName('li')[i];
-                        lignes.addEventListener('click', function(){
-                            console.log(i);
+                        let croix = document.getElementsByTagName('span')[i];
+                        croix.addEventListener('click', function(){
                             socket.emit('suppression', i);
                         });
+                        /*lignes.addEventListener('click', function(){
+                            console.log(i);
+                            socket.emit('suppression', i);
+                        });*/
                     }
 
                     //On met un curseur doigt
                     for (let i = 0; i < todoListe.length; i++) {
-                        let lignes = document.getElementsByTagName('li')[i];
-                        lignes.style.cursor = 'pointer';
+                        let croix = document.getElementsByTagName('span')[i];
+                        croix.style.cursor = 'pointer';
                     }
                 }
             );
-
-
 
         </script>
 
