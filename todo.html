@@ -37,12 +37,10 @@
                         }
                     //});
 
-                    //On applique un evenement qui supprime l'evenement lorque l'on clique sur la croix
+                    //On met un curseur doigt
                     for (let i = 0; i < todoListe.length; i++) {
                         let croix = document.getElementsByTagName('span')[i];
-                        croix.addEventListener('click', function(){
-                            socket.emit('suppression', i);
-                        });
+                        croix.style.cursor = 'pointer';
                     }
                 }
             );
